@@ -1,0 +1,42 @@
+# Uncomment the next line to define a global platform for your project
+platform :ios, '10.0'
+
+require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
+
+target 'construApp' do
+  # Comment the next line if you don't want to use dynamic frameworks
+
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+  pod 'React', :path => '../node_modules/react-native', :subspecs => [
+    'Core',
+    'CxxBridge',
+    'DevSupport',
+    'RCTText',
+    'RCTNetwork',
+    'RCTWebSocket',
+    'RCTAnimation',
+    'RCTImage',
+  ]
+
+  # Pods for riderApp
+  pod 'Firebase/Core', '~> 6.3.0'
+  pod 'Firebase/Auth', '~> 6.3.0'
+  pod 'GoogleIDFASupport', '~> 3.14.0'
+  pod 'Firebase/Storage', '~> 6.3.0'
+  pod 'Firebase/Firestore', '~> 6.3.0'
+  pod 'Fabric', '~> 1.10.2'
+  pod 'Crashlytics', '~> 3.13.2'
+  pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
+  pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+
+  pod 'react-native-spinkit', :path => '../node_modules/react-native-spinkit'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+  pod 'CodePush', :path => '../node_modules/react-native-code-push'
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+end
+
+use_unimodules!

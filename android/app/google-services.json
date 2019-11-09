@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "664536037412",
+    "firebase_url": "https://constru-app-fb3a7.firebaseio.com",
+    "project_id": "constru-app-fb3a7",
+    "storage_bucket": "constru-app-fb3a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:664536037412:android:2b126938bdff38c5edc0b1",
+        "android_client_info": {
+          "package_name": "com.construapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "664536037412-hp7k5edkarbnetoptvecv01l08duvqq0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbH-3lKL1u-M_02ZDlSp-riOlEoUasZAY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "664536037412-hp7k5edkarbnetoptvecv01l08duvqq0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
