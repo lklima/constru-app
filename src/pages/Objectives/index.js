@@ -16,7 +16,7 @@ export default class Objectives extends Component {
       <View style={styles.container}>
         <Buttom
           text="Adicionar Metas"
-          navigation={() => navigation.navigate('AddObjective')}
+          navigation={() => navigation.navigate('AddObjective', { project: navigation.getParam('project') })}
         />
       </View>
     );

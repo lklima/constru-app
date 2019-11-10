@@ -12,7 +12,7 @@ export default class Peoples extends Component {
       <View style={styles.container}>
         <Buttom
           text="Adicionar Pessoas"
-          navigation={() => navigation.navigate('AddPeoples')}
+          navigation={() => navigation.navigate('AddPeoples', { project: navigation.getParam('project') })}
         />
       </View>
     );

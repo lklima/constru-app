@@ -7,6 +7,7 @@ import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import RNPickerSelect from 'react-native-picker-select';
 
 import { styles } from './styles';
 import { colors } from '~/styles';
@@ -15,6 +16,8 @@ export default class AddPeoples extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      funcs: '',
+      imageLoader: false,
       loader: false,
       profile: '',
       name: '',
@@ -23,8 +26,26 @@ export default class AddPeoples extends Component {
       birthday: '',
       phone: '',
       func: '',
-      profileUrl: '',
+      uri: '',
     };
+  }
+
+  componentDidMount() {
+    const { navigation } = this.props;
+    const funcs = [];
+    const project = navigation.getParam('project');
+    firebase.firestore().collection('projects').doc(project.id).collection('objectives')
+      .get()
+      .then((snapshot) => {
+        snapshot.forEach((doc) => {
+          const { objective } = doc.data();
+          funcs.push({
+            label: objective,
+            value: doc.id,
+          });
+        });
+        this.setState({ funcs });
+      });
   }
 
   pickImage = async (res) => {
@@ -35,20 +56,18 @@ export default class AddPeoples extends Component {
     );
 
     if (status === 'granted') {
-      this.setState({ loader: true });
+      this.setState({ imageLoader: true });
       const result = await pickFrom({
         allowsEditing: true,
         aspect: [3, 3],
         base64: true,
       });
       if (!result.cancelled) {
-        this.uploadmultimedia(result.uri);
-        this.setState(
-          { profile: `data:image/jpeg;base64,${result.base64}` },
-          () => {
-            this.setState({ loader: false });
-          },
-        );
+        this.setState({
+          profile: `data:image/jpeg;base64,${result.base64}`,
+          uri: result.uri,
+          imageLoader: false,
+        });
       } else {
         this.setState({ loader: false });
       }
@@ -61,40 +80,53 @@ export default class AddPeoples extends Component {
     </View>
   );
 
-  addPeople = () => {
+  addPeople = async () => {
     const {
-      name, nick, cpf, birthday, phone, func, profileUrl,
+      name, nick, cpf, birthday, phone, func, uri,
     } = this.state;
+    const { navigation } = this.props;
+    const project = navigation.getParam('project');
 
-    if (name === '' || nick === '' || nick === '' || cpf === '' || birthday === '' || phone === '' || func === '') {
+    if (name === '' || nick === '' || cpf === '' || birthday === '' || phone === '' || func === '') {
       Alert.alert('', 'Todos os Campos são obrigatórios');
-    } else if (profileUrl === '') {
-      Alert.alert('', 'Todos os Campos são obrigatórios');
+    } else if (uri === '') {
+      Alert.alert('', 'Adicione a foto do usuário');
     } else {
+      const imageRef = firebase
+        .storage()
+        .ref()
+        .child(`peoples/photo/${cpf}/`);
 
+      this.setState({ imageLoader: true, loader: true });
+
+      return imageRef
+        .put(uri)
+        .then(() => (
+          imageRef.getDownloadURL()
+        ))
+        .then((url) => {
+          this.setState({ imageLoader: false });
+          firebase.firestore().collection('projects').doc(project.id).collection('peoples')
+            .add({
+              name,
+              nick,
+              cpf,
+              birthday,
+              phone,
+              func,
+              photo: url,
+            })
+            .then(() => {
+              this.setState({ loader: false });
+              this.navigation.goBack();
+            });
+        })
+        .catch((e) => console.log(e));
     }
   }
 
   static navigationOptions = {
     title: 'Cadastro de Pessoas',
-  }
-
-  async uploadmultimedia(uri) {
-    const { cpf } = this.state;
-    const imageRef = firebase
-      .storage()
-      .ref()
-      .child(`peoples/photo/${cpf}`);
-
-    return imageRef
-      .put(uri)
-      .then(() => (
-        imageRef.getDownloadURL()
-      ))
-      .then((url) => {
-        this.setState({ profileUrl: url });
-      })
-      .catch((e) => console.log(e));
   }
 
   uploadImage() {
@@ -120,15 +152,16 @@ export default class AddPeoples extends Component {
 
   render() {
     const {
-      name, nick, cpf, birthday, phone, func, loader, profile,
+      name, nick, cpf, birthday, phone, loader, profile, funcs, imageLoader,
     } = this.state;
+
     return (
       <View style={styles.container}>
         <ScrollView>
           <View style={styles.viewStyle}>
             <View style={styles.imageParentView}>
               <View style={styles.imageViewStyle}>
-                {loader ? (
+                {imageLoader ? (
                   this.loader()
                 ) : (
                   <TouchableOpacity onPress={() => this.ActionSheet.show()}>
@@ -226,25 +259,29 @@ export default class AddPeoples extends Component {
             />
           </View>
 
-          <View style={styles.inputView}>
+          <View style={styles.selectView}>
             <Icon
-              name="check-box-multiple-outline"
+              name="text-shadow"
               color={colors.primary}
               size={30}
             />
-            <TextInput
-              placeholder="Responsabilidade"
+
+            <RNPickerSelect
+              onValueChange={(t) => this.setState({ func: t })}
+              items={funcs || []}
+              style={{ inputAndroid: styles.inputAndroid }}
+              useNativeAndroidPickerStyle={false}
               placeholderTextColor="black"
-              onChangeText={(t) => this.setState({ func: t })}
-              value={func}
-              style={styles.input}
-              autoCapitalize="words"
+              placeholder={{
+                label: 'Escolha uma função...',
+                value: '',
+              }}
             />
           </View>
 
 
           <TouchableOpacity style={styles.buttom} onPress={() => this.addPeople()}>
-            <Text style={styles.buttomText}>ADICIONAR</Text>
+            {loader ? <ActivityIndicator size="large" color="white" /> : <Text style={styles.buttomText}>ADICIONAR</Text>}
           </TouchableOpacity>
           {this.uploadImage()}
         </ScrollView>

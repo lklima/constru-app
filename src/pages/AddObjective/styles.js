@@ -40,10 +40,22 @@ export const styles = StyleSheet.create({
     borderBottomColor: colors.primary,
     marginBottom: 20,
   },
+  selectView: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderBottomColor: colors.primary,
+    marginBottom: 20,
+  },
   input: {
     flex: 1,
     marginLeft: 5,
     fontSize: 18,
+    color: 'black',
+  },
+  inputAndroid: {
+    fontSize: 18,
+    width: '100%',
     color: 'black',
   },
   buttom: {
