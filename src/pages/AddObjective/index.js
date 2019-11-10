@@ -18,10 +18,24 @@ export default class AddObjective extends Component {
       value: '',
       unit: '',
       loading: false,
+      update: false,
     };
   }
 
   componentDidMount() {
+    const { navigation } = this.props;
+    const object = navigation.getParam('objective');
+
+    if (object) {
+      this.setState({
+        id: object.id,
+        value: object.value,
+        objective: object.objective,
+        unit: object.unit,
+        update: true,
+      });
+    }
+
     const units = [];
     firebase.firestore().collection('units').get().then((snapshot) => {
       snapshot.forEach((doc) => {
@@ -36,12 +50,24 @@ export default class AddObjective extends Component {
   }
 
   addObjective = () => {
-    const { objective, value, unit } = this.state;
     const { navigation } = this.props;
     const project = navigation.getParam('project');
 
+    const {
+      objective, value, unit, update, id,
+    } = this.state;
+
     if (objective === '' || value === '' || unit === '') {
       Alert.alert('', 'Todos os campos são obrigatórios');
+    } else if (update) {
+      firebase.firestore().collection('projects').doc(project.id).collection('objectives')
+        .doc(id)
+        .update({
+          objective,
+          value: parseInt(value),
+          unit,
+        })
+        .then(() => navigation.goBack());
     } else {
       this.setState({ loading: true });
       firebase.firestore().collection('projects').doc(project.id).collection('objectives')
@@ -64,7 +90,7 @@ export default class AddObjective extends Component {
 
   render() {
     const {
-      objective, value, units, loading,
+      objective, value, units, loading, unit, update,
     } = this.state;
     return (
       <View style={styles.container}>
@@ -98,7 +124,7 @@ export default class AddObjective extends Component {
               keyboardType="number-pad"
               placeholderTextColor="black"
               onChangeText={(t) => this.setState({ value: t })}
-              value={value}
+              value={value.toString()}
               style={styles.input}
             />
           </View>
@@ -113,6 +139,7 @@ export default class AddObjective extends Component {
             <RNPickerSelect
               onValueChange={(t) => this.setState({ unit: t })}
               items={units}
+              value={unit}
               style={{ inputAndroid: styles.inputAndroid }}
               useNativeAndroidPickerStyle={false}
               placeholderTextColor="black"
@@ -125,7 +152,7 @@ export default class AddObjective extends Component {
 
 
           <TouchableOpacity style={styles.buttom} onPress={() => this.addObjective()}>
-            {loading ? <ActivityIndicator size="large" color="white" /> : <Text style={styles.buttomText}>ADICIONAR</Text>}
+            {loading ? <ActivityIndicator size="large" color="white" /> : <Text style={styles.buttomText}>{update ? 'ATUALIZAR' : 'ADICIONAR'}</Text>}
           </TouchableOpacity>
         </ScrollView>
       </View>

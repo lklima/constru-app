@@ -23,7 +23,6 @@ export default class HomeProject extends Component {
   async componentDidMount() {
     const { navigation } = this.props;
     const project = navigation.getParam('project');
-    navigation.setParams({ id: project.id });
 
     this.ref = await firebase.firestore().collection('projects').doc(project.id).collection('objectives');
 

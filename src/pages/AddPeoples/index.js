@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import ActionSheet from 'react-native-actionsheet';
 import {
-  ActivityIndicator, View, TouchableOpacity, Image, TextInput, Text, ScrollView, Alert,
+  ActivityIndicator, View, TouchableOpacity, Image, TextInput, Text, ScrollView, Alert, CameraRoll,
 } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
 import firebase from 'react-native-firebase';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import RNPickerSelect from 'react-native-picker-select';
+import QRCode from 'react-native-qrcode-svg';
+import Modal from 'react-native-modalbox';
+import RNFS from 'react-native-fs';
 
 import { styles } from './styles';
 import { colors } from '~/styles';
@@ -28,6 +31,8 @@ export default class AddPeoples extends Component {
       func: '',
       uri: '',
       update: false,
+      isOpen: false,
+      value: '',
     };
   }
 
@@ -176,9 +181,19 @@ export default class AddPeoples extends Component {
               func,
               photo: url,
             })
-            .then(() => {
+            .then((res) => {
+              const { _documentPath: { _parts } } = res;
+              this.setState({ value: _parts[3], isOpen: true });
               this.setState({ loader: false });
-              navigation.goBack();
+              this.setState({
+                name: '',
+                nick: '',
+                cpf: '',
+                birthday: '',
+                phone: '',
+                func: '',
+                profile: '',
+              });
             });
         })
         .catch((e) => console.log(e));
@@ -207,6 +222,46 @@ export default class AddPeoples extends Component {
           }}
         />
       </View>
+    );
+  }
+
+  saveQrToDisk() {
+    const { navigation } = this.props;
+    this.svg.toDataURL((data) => {
+      RNFS.writeFile(`${RNFS.CachesDirectoryPath}/some-name.png`, data, 'base64')
+        .then(() => CameraRoll.saveToCameraRoll(`${RNFS.CachesDirectoryPath}/some-name.png`, 'photo'))
+        .then(() => {
+          navigation.goBack();
+          Alert.alert('', 'Salvo na Galeria !!');
+        });
+    });
+  }
+
+  genarateQrCode() {
+    const { isOpen, value } = this.state;
+    return (
+      <Modal
+        isOpen={isOpen}
+        position="center"
+        coverScreen
+        ref={(ref) => { this.modal = ref; }}
+        style={styles.modal}
+      >
+        <QRCode
+          value={value}
+          size={180}
+          getRef={(c) => { this.svg = c; }}
+        />
+        <TouchableOpacity
+          onPress={() => {
+            this.saveQrToDisk();
+            this.modal.close();
+          }}
+          style={styles.modalButtom}
+        >
+          <Text style={styles.modalButtomText}>Salvar</Text>
+        </TouchableOpacity>
+      </Modal>
     );
   }
 
@@ -345,6 +400,7 @@ export default class AddPeoples extends Component {
             {loader ? <ActivityIndicator size="large" color="white" /> : <Text style={styles.buttomText}>{update ? 'ATUALIZAR ' : 'ADICIONAR'}</Text>}
           </TouchableOpacity>
           {this.uploadImage()}
+          {this.genarateQrCode()}
         </ScrollView>
       </View>
     );

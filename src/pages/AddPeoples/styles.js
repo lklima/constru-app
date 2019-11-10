@@ -17,6 +17,24 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 13,
   },
+  modal: {
+    height: 250,
+    width: 250,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  modalButtom: {
+    height: 40,
+    width: 180,
+    alignItems: 'center',
+    borderRadius: 10,
+    justifyContent: 'center',
+    backgroundColor: colors.primary,
+  },
+  modalButtomText: {
+    color: 'white',
+    fontSize: 16,
+  },
   imageParentView: {
     borderRadius: 140 / 2,
     width: 140,

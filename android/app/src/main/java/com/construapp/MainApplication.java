@@ -2,6 +2,8 @@ package com.construapp;
 
 import android.app.Application;
 import com.facebook.react.ReactApplication;
+import org.reactnative.camera.RNCameraPackage;
+import com.rnfs.RNFSPackage;
 import com.horcrux.svg.SvgPackage;
 import com.microsoft.codepush.react.CodePush;
 import com.swmansion.reanimated.ReanimatedPackage;
@@ -47,6 +49,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNCameraPackage(),
+            new RNFSPackage(),
             new SvgPackage(),
             new CodePush(BuildConfig.CODEPUSH_KEY, getApplicationContext(), BuildConfig.DEBUG),
             new ReanimatedPackage(),
