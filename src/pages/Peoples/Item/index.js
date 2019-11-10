@@ -1,49 +1,74 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import firebase from 'react-native-firebase';
 
-import { View, Text, TouchableOpacity } from 'react-native';
+import {
+  View, Text, TouchableOpacity, Image, Alert,
+} from 'react-native';
 
 import { styles } from './styles';
-import { colors } from '~/styles';
 
-const Item = ({ project, navigation }) => (
-  <TouchableOpacity onPress={() => navigation.navigate('Project', { project })}>
-    <View style={styles.container}>
-      <View style={styles.progressView}>
-        <Text style={styles.progressText}>{project.progress}%</Text>
-      </View>
-
-      <View style={styles.infoView}>
-        <Text style={styles.name}>{project.name}</Text>
-        <View style={styles.rowView}>
-          <Icon
-            name="calendar"
-            size={16}
-            color={colors.regular}
-          />
-          <Text>Inicío - {project.startDate} </Text>
-        </View>
-
-        <View style={styles.rowView}>
-          <Icon
-            name="calendar"
-            size={16}
-            color={colors.regular}
-          />
-          <Text>Previsão de Término - {project.startDate} </Text>
-        </View>
-
-        <View style={styles.rowView}>
-          <Icon
-            name="map-marker-minus"
-            size={16}
-            color={colors.regular}
-          />
-          <Text numberOfLines={1}>{`${project.address} - ${project.city} - ${project.state}`} </Text>
-        </View>
+const Item = ({ people, navigation, project }) => (
+  <View style={styles.container}>
+    <View style={styles.rowView}>
+      <Image
+        style={styles.image}
+        source={{ uri: people.photo }}
+      />
+      <View>
+        <Text style={styles.name}>{people.name}</Text>
+        <Text>{people.nick}</Text>
       </View>
     </View>
-  </TouchableOpacity>
+
+    <View style={styles.buttomView}>
+      <View>
+        <TouchableOpacity style={styles.buttom} onPress={() => navigation.navigate('AddPeoples', { people, project })}>
+          <Icon
+            name="pencil"
+            color="white"
+            size={18}
+          />
+        </TouchableOpacity>
+        <Text>Editar</Text>
+      </View>
+
+      <View>
+        <TouchableOpacity
+          style={styles.buttom}
+          onPress={() => {
+            Alert.alert(
+              `Excluir ${people.name}?`,
+              'Essa ação não pode ser desfeita',
+              [
+                {
+                  text: 'Não',
+                  onPress: () => {},
+                  style: 'cancel',
+                },
+                {
+                  text: 'Sim',
+                  onPress: () => {
+                    firebase.firestore().collection('projects').doc(project.id).collection('peoples')
+                      .doc(people.id)
+                      .delete();
+                  },
+                },
+              ],
+              { cancelable: false },
+            );
+          }}
+        >
+          <Icon
+            name="trash-can"
+            color="white"
+            size={20}
+          />
+        </TouchableOpacity>
+        <Text>Excluir</Text>
+      </View>
+    </View>
+  </View>
 );
 
 export default Item;

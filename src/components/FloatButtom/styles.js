@@ -7,8 +7,8 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     position: 'absolute',
-    bottom: 60,
-    right: 15,
+    bottom: 50,
+    right: 10,
   },
   buttom: {
     width: 50,

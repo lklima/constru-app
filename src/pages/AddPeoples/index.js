@@ -27,6 +27,7 @@ export default class AddPeoples extends Component {
       phone: '',
       func: '',
       uri: '',
+      update: false,
     };
   }
 
@@ -34,6 +35,22 @@ export default class AddPeoples extends Component {
     const { navigation } = this.props;
     const funcs = [];
     const project = navigation.getParam('project');
+    const people = navigation.getParam('people');
+
+    if (people) {
+      this.setState({
+        idProject: project.id,
+        idUser: people.id,
+        func: people.func,
+        profile: people.photo,
+        name: people.name,
+        nick: people.nick,
+        cpf: people.cpf,
+        birthday: people.birthday,
+        phone: people.phone,
+        update: true,
+      });
+    }
     firebase.firestore().collection('projects').doc(project.id).collection('objectives')
       .get()
       .then((snapshot) => {
@@ -69,28 +86,71 @@ export default class AddPeoples extends Component {
           imageLoader: false,
         });
       } else {
-        this.setState({ loader: false });
+        this.setState({ imageLoader: false });
       }
     }
   };
 
   loader = () => (
     <View style={[styles.loadingcontainer, styles.horizontal]}>
-      <ActivityIndicator size="large" color="gray" />
+      <ActivityIndicator size="large" color="white" />
     </View>
   );
 
   addPeople = async () => {
     const {
-      name, nick, cpf, birthday, phone, func, uri,
+      name, nick, cpf, birthday, phone, func, uri, update, idProject, idUser, profile,
     } = this.state;
     const { navigation } = this.props;
     const project = navigation.getParam('project');
 
     if (name === '' || nick === '' || cpf === '' || birthday === '' || phone === '' || func === '') {
       Alert.alert('', 'Todos os Campos são obrigatórios');
-    } else if (uri === '') {
+    } else if (uri === '' && profile === '') {
       Alert.alert('', 'Adicione a foto do usuário');
+    } else if (update) {
+      const imageRef = firebase
+        .storage()
+        .ref()
+        .child(`peoples/photo/${cpf}/`);
+
+      this.setState({ imageLoader: true, loader: true });
+
+      if (profile === '') {
+        return imageRef
+          .put(uri)
+          .then(() => (
+            imageRef.getDownloadURL()
+          ))
+          .then((url) => {
+            this.setState({ imageLoader: false });
+
+            firebase.firestore().collection('projects').doc(idProject).collection('peoples')
+              .doc(idUser)
+              .update({
+                name,
+                nick,
+                cpf,
+                birthday,
+                phone,
+                func,
+                photo: url,
+              })
+              .then(() => navigation.goBack());
+          });
+      }
+      firebase.firestore().collection('projects').doc(idProject).collection('peoples')
+        .doc(idUser)
+        .update({
+          name,
+          nick,
+          cpf,
+          birthday,
+          phone,
+          func,
+          photo: profile,
+        })
+        .then(() => navigation.goBack());
     } else {
       const imageRef = firebase
         .storage()
@@ -118,7 +178,7 @@ export default class AddPeoples extends Component {
             })
             .then(() => {
               this.setState({ loader: false });
-              this.navigation.goBack();
+              navigation.goBack();
             });
         })
         .catch((e) => console.log(e));
@@ -152,7 +212,7 @@ export default class AddPeoples extends Component {
 
   render() {
     const {
-      name, nick, cpf, birthday, phone, loader, profile, funcs, imageLoader,
+      name, nick, cpf, birthday, phone, loader, profile, funcs, imageLoader, func, update,
     } = this.state;
 
     return (
@@ -271,6 +331,7 @@ export default class AddPeoples extends Component {
               items={funcs || []}
               style={{ inputAndroid: styles.inputAndroid }}
               useNativeAndroidPickerStyle={false}
+              value={func}
               placeholderTextColor="black"
               placeholder={{
                 label: 'Escolha uma função...',
@@ -281,7 +342,7 @@ export default class AddPeoples extends Component {
 
 
           <TouchableOpacity style={styles.buttom} onPress={() => this.addPeople()}>
-            {loader ? <ActivityIndicator size="large" color="white" /> : <Text style={styles.buttomText}>ADICIONAR</Text>}
+            {loader ? <ActivityIndicator size="large" color="white" /> : <Text style={styles.buttomText}>{update ? 'ATUALIZAR ' : 'ADICIONAR'}</Text>}
           </TouchableOpacity>
           {this.uploadImage()}
         </ScrollView>
