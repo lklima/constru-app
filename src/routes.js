@@ -8,11 +8,14 @@ import Main from '~/pages/Main';
 import AddConstruct from '~/pages/AddConstruct';
 import Inicío from '~/pages/HomeProject';
 import Pessoas from '~/pages/Peoples';
+import AddPeoples from '~/pages/AddPeoples';
+import AddObjective from '~/pages/AddObjective';
 import Metas from '~/pages/Objectives';
 import Configurações from '~/pages/Edit';
 import { colors } from '~/styles';
 
 const margin = 5;
+
 const Project = createBottomTabNavigator(
   {
     Inicío,
@@ -75,7 +78,6 @@ const Project = createBottomTabNavigator(
       inactiveTintColor: colors.lighter,
       tabStyle: {
         backgroundColor: colors.primary,
-        height: Platform.OS === 'ios' ? 55 : null,
       },
     },
   },
@@ -84,6 +86,8 @@ const Project = createBottomTabNavigator(
 const Routes = createAppContainer(createStackNavigator({
   Main,
   AddConstruct,
+  AddPeoples,
+  AddObjective,
   Project: {
     screen: Project,
     navigationOptions: {
@@ -91,7 +95,7 @@ const Routes = createAppContainer(createStackNavigator({
     },
   },
 }, {
-  initialRouteName: 'Project',
+  initialRouteName: 'AddObjective',
   headerLayoutPreset: 'center',
   headerBackTitleVisible: false,
   defaultNavigationOptions: {
