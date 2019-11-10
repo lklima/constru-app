@@ -21,7 +21,6 @@ export default class AddObjective extends Component {
   }
 
   render() {
-    const { loader, profile } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView>

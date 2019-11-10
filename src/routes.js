@@ -50,7 +50,7 @@ const Project = createBottomTabNavigator(
             return (
               <Icon
                 name="marker-check"
-                size={focused ? 32 : 30}
+                size={focused ? 32 : 27}
                 color={tintColor}
                 style={{ marginTop: Platform.OS === 'ios' ? 0 : margin }}
               />
@@ -91,11 +91,11 @@ const Routes = createAppContainer(createStackNavigator({
   Project: {
     screen: Project,
     navigationOptions: {
-      headerTitle: 'Visão Geral',
+      headerTitle: 'Empreendimento',
     },
   },
 }, {
-  initialRouteName: 'AddObjective',
+  initialRouteName: 'Main',
   headerLayoutPreset: 'center',
   headerBackTitleVisible: false,
   defaultNavigationOptions: {

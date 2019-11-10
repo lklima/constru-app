@@ -2,7 +2,7 @@ export default {
   white: '#FFF',
   lighter: '#e0e0e0',
   light: '#33e3ad',
-  regular: '#999',
+  regular: '#807b7b',
   dark: '#666',
   darker: '#333',
   black: '#000',

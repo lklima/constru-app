@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ActionSheet from 'react-native-actionsheet';
 import {
-  ActivityIndicator, View, TouchableOpacity, Image, TextInput, Text, ScrollView,
+  ActivityIndicator, View, TouchableOpacity, Image, TextInput, Text, ScrollView, Alert,
 } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import * as ImagePicker from 'expo-image-picker';
@@ -17,6 +17,13 @@ export default class AddPeoples extends Component {
     this.state = {
       loader: false,
       profile: '',
+      name: '',
+      nick: '',
+      cpf: '',
+      birthday: '',
+      phone: '',
+      func: '',
+      profileUrl: '',
     };
   }
 
@@ -54,16 +61,30 @@ export default class AddPeoples extends Component {
     </View>
   );
 
+  addPeople = () => {
+    const {
+      name, nick, cpf, birthday, phone, func, profileUrl,
+    } = this.state;
+
+    if (name === '' || nick === '' || nick === '' || cpf === '' || birthday === '' || phone === '' || func === '') {
+      Alert.alert('', 'Todos os Campos são obrigatórios');
+    } else if (profileUrl === '') {
+      Alert.alert('', 'Todos os Campos são obrigatórios');
+    } else {
+
+    }
+  }
+
   static navigationOptions = {
     title: 'Cadastro de Pessoas',
   }
 
   async uploadmultimedia(uri) {
-    const { currentUser } = this.state;
+    const { cpf } = this.state;
     const imageRef = firebase
       .storage()
       .ref()
-      .child(`users/profile_photo/${currentUser.uid}`);
+      .child(`peoples/photo/${cpf}`);
 
     return imageRef
       .put(uri)
@@ -71,12 +92,7 @@ export default class AddPeoples extends Component {
         imageRef.getDownloadURL()
       ))
       .then((url) => {
-        firebase
-          .database()
-          .ref(`/users/${currentUser.uid}/`)
-          .update({
-            profile_image: url,
-          });
+        this.setState({ profileUrl: url });
       })
       .catch((e) => console.log(e));
   }
@@ -103,7 +119,9 @@ export default class AddPeoples extends Component {
   }
 
   render() {
-    const { loader, profile } = this.state;
+    const {
+      name, nick, cpf, birthday, phone, func, loader, profile,
+    } = this.state;
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -137,6 +155,8 @@ export default class AddPeoples extends Component {
             <TextInput
               placeholder="Nome"
               placeholderTextColor="black"
+              onChangeText={(t) => this.setState({ name: t })}
+              value={name}
               style={styles.input}
               autoCapitalize="words"
             />
@@ -151,6 +171,8 @@ export default class AddPeoples extends Component {
             <TextInput
               placeholder="Apelido"
               placeholderTextColor="black"
+              onChangeText={(t) => this.setState({ nick: t })}
+              value={nick}
               style={styles.input}
               autoCapitalize="words"
             />
@@ -165,6 +187,8 @@ export default class AddPeoples extends Component {
             <TextInput
               placeholder="CPF"
               placeholderTextColor="black"
+              onChangeText={(t) => this.setState({ cpf: t })}
+              value={cpf}
               style={styles.input}
               autoCapitalize="words"
             />
@@ -179,6 +203,8 @@ export default class AddPeoples extends Component {
             <TextInput
               placeholder="Data de Nascimento"
               placeholderTextColor="black"
+              onChangeText={(t) => this.setState({ birthday: t })}
+              value={birthday}
               style={styles.input}
               autoCapitalize="words"
             />
@@ -193,6 +219,8 @@ export default class AddPeoples extends Component {
             <TextInput
               placeholder="Telefone"
               placeholderTextColor="black"
+              onChangeText={(t) => this.setState({ phone: t })}
+              value={phone}
               style={styles.input}
               autoCapitalize="words"
             />
@@ -207,13 +235,15 @@ export default class AddPeoples extends Component {
             <TextInput
               placeholder="Responsabilidade"
               placeholderTextColor="black"
+              onChangeText={(t) => this.setState({ func: t })}
+              value={func}
               style={styles.input}
               autoCapitalize="words"
             />
           </View>
 
 
-          <TouchableOpacity style={styles.buttom} onPress={() => navigation.navigate('Project')}>
+          <TouchableOpacity style={styles.buttom} onPress={() => this.addPeople()}>
             <Text style={styles.buttomText}>ADICIONAR</Text>
           </TouchableOpacity>
           {this.uploadImage()}
