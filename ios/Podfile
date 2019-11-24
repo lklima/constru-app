@@ -35,11 +35,15 @@ target 'construApp' do
 
   pod 'CodePush', :path => '../node_modules/react-native-code-push'
 
-  pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
   pod 'react-native-camera', :path => '../node_modules/react-native-camera'
+
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
+  pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
   pod 'ReactNativePermissions', :path => '../node_modules/react-native-permissions'
 

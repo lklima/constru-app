@@ -5,11 +5,19 @@ import { colors } from '~/styles';
 export const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    backgroundColor: 'white',
     height: 80,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'space-between',
-    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 5,
     borderRadius: 10,
     marginBottom: 10,
   },

@@ -12,6 +12,8 @@ import AddPeoples from '~/pages/AddPeoples';
 import AddObjective from '~/pages/AddObjective';
 import Metas from '~/pages/Objectives';
 import Configurações from '~/pages/Edit';
+import ScanScreen from '~/pages/ScanScreen';
+import NewAvaliation from '~/pages/NewAvaliation';
 import { colors } from '~/styles';
 
 const margin = 5;
@@ -88,10 +90,12 @@ const Routes = createAppContainer(createStackNavigator({
   AddConstruct,
   AddPeoples,
   AddObjective,
+  ScanScreen,
+  NewAvaliation,
   Project: {
     screen: Project,
     navigationOptions: {
-      headerTitle: 'Empreendimento',
+      header: null,
     },
   },
 }, {

@@ -5,6 +5,9 @@ import { colors } from '~/styles';
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  containerView: {
+    flex: 1,
     alignItems: 'center',
     marginTop: 20,
     paddingHorizontal: 15,
@@ -40,7 +43,6 @@ export const styles = StyleSheet.create({
   buttomContainer: {
     width: '100%',
     height: 55,
-    backgroundColor: colors.lighter,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -58,5 +60,9 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: 'black',
+  },
+  buttomText: {
+    color: 'black',
+    fontSize: 14,
   },
 });

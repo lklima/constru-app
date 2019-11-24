@@ -22,9 +22,13 @@ export default class Main extends Component {
 
   async componentDidMount() {
     const user = await firebase.auth().currentUser;
-    if (!user) firebase.auth().signInAnonymously().catch((e) => console.tron.log(e));
-
-    this.unsubscribe = this.ref.onSnapshot(this.loadProjects);
+    if (!user) {
+      firebase.auth().signInAnonymously().then(() => {
+        this.unsubscribe = this.ref.onSnapshot(this.loadProjects);
+      }).catch((e) => console.tron.log(e));
+    } else {
+      this.unsubscribe = this.ref.onSnapshot(this.loadProjects);
+    }
   }
 
   componentWillUnmount() {
@@ -35,7 +39,8 @@ export default class Main extends Component {
     const projects = [];
     snapshot.forEach((doc) => {
       const {
-        name, startDate, endDate, customer, enginner, address, city, state, coast, progress, coastPercent,
+        name, startDate, endDate, customer, enginner,
+        address, city, state, coast, progress, coastPercent,
       } = doc.data();
       projects.push({
         id: doc.id,

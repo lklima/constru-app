@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { styles } from './styles';
 import Item from './Item';
+import Header from '~/components/Header';
 
 export default class HomeProject extends Component {
   constructor(props) {
@@ -57,63 +58,67 @@ export default class HomeProject extends Component {
 
   render() {
     const { objectives, progressTotal } = this.state;
+    const { navigation } = this.props;
     return (
       <View style={styles.container}>
-        <View style={styles.statusContainer}>
-          <View style={styles.percentView}>
-            <Text style={styles.percentValue}>
-              {progressTotal ? (progressTotal / objectives.length).toFixed() : '0'}%
-            </Text>
-            <Text style={styles.percentText}>Progresso</Text>
-          </View>
+        <Header navigation={navigation} title="Teste" />
+        <View style={styles.containerView}>
+          <View style={styles.statusContainer}>
+            <View style={styles.percentView}>
+              <Text style={styles.percentValue}>
+                {progressTotal ? (progressTotal / objectives.length).toFixed() : '0'}%
+              </Text>
+              <Text style={styles.percentText}>Progresso</Text>
+            </View>
 
-          <View style={styles.percentView}>
-            <Text style={styles.percentValue}>
+            <View style={styles.percentView}>
+              <Text style={styles.percentValue}>
               0%
-            </Text>
-            <Text style={styles.percentText}>Orçamento</Text>
-          </View>
-        </View>
-
-        <FlatList
-          data={objectives}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <Item objective={item} />}
-          style={styles.list}
-        />
-
-        <View style={styles.buttomContainer}>
-          <View style={styles.buttomView}>
-            <TouchableOpacity style={styles.buttom}>
-              <Icon
-                name="playlist-check"
-                size={25}
-                color="black"
-              />
-            </TouchableOpacity>
-            <Text>Nova Avaliação</Text>
+              </Text>
+              <Text style={styles.percentText}>Orçamento</Text>
+            </View>
           </View>
 
-          <View style={styles.buttomView}>
-            <TouchableOpacity style={styles.buttom}>
-              <Icon
-                name="car-brake-alert"
-                size={25}
-                color="black"
-              />
-            </TouchableOpacity>
-            <Text>Novo Evento</Text>
-          </View>
+          <FlatList
+            data={objectives}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <Item objective={item} />}
+            style={styles.list}
+          />
 
-          <View style={styles.buttomView}>
-            <TouchableOpacity style={styles.buttom}>
-              <Icon
-                name="cash-usd"
-                size={25}
-                color="black"
-              />
-            </TouchableOpacity>
-            <Text>Nova Despesa</Text>
+          <View style={styles.buttomContainer}>
+            <View style={styles.buttomView}>
+              <TouchableOpacity style={styles.buttom} onPress={() => navigation.navigate('ScanScreen')}>
+                <Icon
+                  name="playlist-check"
+                  size={25}
+                  color="black"
+                />
+              </TouchableOpacity>
+              <Text style={styles.buttomText}>Nova Avaliação</Text>
+            </View>
+
+            <View style={styles.buttomView}>
+              <TouchableOpacity style={styles.buttom}>
+                <Icon
+                  name="car-brake-alert"
+                  size={25}
+                  color="black"
+                />
+              </TouchableOpacity>
+              <Text style={styles.buttomText}>Novo Evento</Text>
+            </View>
+
+            <View style={styles.buttomView}>
+              <TouchableOpacity style={styles.buttom}>
+                <Icon
+                  name="cash-usd"
+                  size={25}
+                  color="black"
+                />
+              </TouchableOpacity>
+              <Text style={styles.buttomText}>Nova Despesa</Text>
+            </View>
           </View>
         </View>
       </View>
