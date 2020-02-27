@@ -2,6 +2,6 @@
 
 <h1>Contru App</h1>
 
-Um app React Native que levou o o 2° Lugar na Hackathon Construtec que tem por objetivo 
+Um app React Native + Firebase que levou o o 2° Lugar na Hackathon Construtec que tem por objetivo 
 aferir a produtividade da obra na contrução civil. Nele é possível acompanhar o andamento de cada 
 departamento e o andamento geral de toda a  obra.
